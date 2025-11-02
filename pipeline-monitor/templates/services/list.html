@@ -1,0 +1,37 @@
+{{define "content"}}
+<div class="space-y-6">
+    <!-- Page Header -->
+    <div class="flex justify-between items-center">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Services</h2>
+            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                Monitor and manage your service endpoints
+            </p>
+        </div>
+        <div class="flex space-x-3">
+            <button
+                hx-get="/partials/services-table"
+                hx-target="#services-table"
+                hx-trigger="click"
+                class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+            >
+                Refresh
+            </button>
+            <a
+                href="/services/new"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+            >
+                Add Service
+            </a>
+        </div>
+    </div>
+
+    <!-- Services Table -->
+    <div id="services-table"
+         hx-get="/partials/services-table"
+         hx-trigger="load, every 30s"
+         class="bg-white dark:bg-gray-800 shadow rounded-lg">
+        <div class="animate-pulse p-4">Loading services...</div>
+    </div>
+</div>
+{{end}}

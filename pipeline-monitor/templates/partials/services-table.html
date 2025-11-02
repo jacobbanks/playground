@@ -1,0 +1,113 @@
+<!-- Services Table -->
+<div class="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-md">
+    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+        {{range .services}}
+        <li id="service-{{.ID}}"
+            hx-get="/partials/service-status/{{.ID}}"
+            hx-trigger="every 10s"
+            hx-target="#service-{{.ID}}"
+            hx-swap="outerHTML"
+            class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+            <div class="px-4 py-4 sm:px-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <!-- Status Indicator -->
+                        <div class="flex-shrink-0">
+                            {{if eq .Status "healthy"}}
+                                <div class="h-3 w-3 bg-green-500 rounded-full animate-pulse-green"></div>
+                            {{else if eq .Status "unhealthy"}}
+                                <div class="h-3 w-3 bg-red-500 rounded-full animate-pulse-red"></div>
+                            {{else if eq .Status "timeout"}}
+                                <div class="h-3 w-3 bg-yellow-500 rounded-full"></div>
+                            {{else}}
+                                <div class="h-3 w-3 bg-gray-400 rounded-full"></div>
+                            {{end}}
+                        </div>
+
+                        <!-- Service Info -->
+                        <div class="ml-4">
+                            <div class="flex items-center">
+                                <p class="text-sm font-medium text-gray-900 dark:text-white">
+                                    {{.Name}}
+                                </p>
+                                <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                    {{if eq .Status "healthy"}}bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100
+                                    {{else if eq .Status "unhealthy"}}bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100
+                                    {{else if eq .Status "timeout"}}bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100
+                                    {{else}}bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100{{end}}">
+                                    {{.Status}}
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                {{.URL}}
+                            </p>
+                            {{if .Description}}
+                            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                                {{.Description}}
+                            </p>
+                            {{end}}
+                        </div>
+                    </div>
+
+                    <!-- Metrics & Actions -->
+                    <div class="flex items-center space-x-4">
+                        <!-- Response Time -->
+                        <div class="text-right">
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Response Time</p>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">
+                                {{if gt .ResponseTime 0}}
+                                    {{formatResponseTime .ResponseTime}}
+                                {{else}}
+                                    --
+                                {{end}}
+                            </p>
+                        </div>
+
+                        <!-- Last Check -->
+                        <div class="text-right">
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Last Check</p>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">
+                                {{.LastCheck.Format "15:04:05"}}
+                            </p>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="flex items-center space-x-2">
+                            <!-- Edit Button -->
+                            <button hx-get="/services/{{.ID}}/edit"
+                                    hx-target="#main-content"
+                                    hx-swap="innerHTML"
+                                    class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                                Edit
+                            </button>
+                            <!-- Delete Button -->
+                            <button hx-delete="/services/{{.ID}}"
+                                    hx-target="#service-{{.ID}}"
+                                    hx-swap="outerHTML"
+                                    hx-confirm="Are you sure you want to delete this service?"
+                                    class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+        {{end}}
+    </ul>
+</div>
+
+{{if not .services}}
+<div class="text-center py-12">
+    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">No services</h3>
+    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Get started by adding a new service to monitor.</p>
+    <div class="mt-6">
+        <button hx-get="/services/new"
+                hx-target="#main-content"
+                hx-swap="innerHTML"
+                class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            Add Service
+        </button>
+    </div>
+</div>
+{{end}}

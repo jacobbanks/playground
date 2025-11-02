@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{{.title}} - Pipeline Monitor</title>
+
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+
+        <!-- HTMX - The star of our show -->
+        <script
+            src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js"
+            integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+"
+            crossorigin="anonymous"
+        ></script>
+
+        <!-- HTMX SSE Extension for real-time updates -->
+        <script
+            src="https://cdn.jsdelivr.net/npm/htmx-ext-sse@2.2.2"
+            integrity="sha384-Y4gc0CK6Kg+hmulDc6rZPJu0tqvk7EWlih0Oh+2OkAi1ZDlCbBDCQEE2uVk472Ky"
+            crossorigin="anonymous"
+        ></script>
+
+        <!-- Configure Tailwind -->
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            "status-healthy": "#10b981",
+                            "status-unhealthy": "#ef4444",
+                            "status-timeout": "#f59e0b",
+                            "status-unknown": "#6b7280",
+                        },
+                    },
+                },
+            };
+        </script>
+
+        <!-- Custom styles for HTMX animations -->
+        <style>
+            .htmx-indicator {
+                opacity: 0;
+                transition: opacity 500ms ease-in;
+            }
+            .htmx-request .htmx-indicator {
+                opacity: 1;
+            }
+            .htmx-request.htmx-indicator {
+                opacity: 1;
+            }
+
+            @keyframes pulse-green {
+                0%,
+                100% {
+                    background-color: rgb(34 197 94);
+                }
+                50% {
+                    background-color: rgb(22 163 74);
+                }
+            }
+
+            @keyframes pulse-red {
+                0%,
+                100% {
+                    background-color: rgb(239 68 68);
+                }
+                50% {
+                    background-color: rgb(220 38 38);
+                }
+            }
+
+            .animate-pulse-green {
+                animation: pulse-green 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            }
+
+            .animate-pulse-red {
+                animation: pulse-red 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            }
+        </style>
+    </head>
+
+    <body
+        hx-ext="sse"
+        class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+    >
+        <!-- Navigation -->
+        <nav
+            class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700"
+        >
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <h1
+                                class="text-xl font-bold text-blue-600 dark:text-blue-400"
+                            >
+                                🚀 Pipeline Monitor
+                            </h1>
+                        </div>
+                        <div class="hidden md:ml-10 md:flex md:space-x-8">
+                            <a
+                                href="/"
+                                class="text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium"
+                            >
+                                Dashboard
+                            </a>
+                            <a
+                                href="/services"
+                                class="text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium"
+                            >
+                                Services
+                            </a>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <button
+                            hx-get="/partials/dashboard-stats"
+                            hx-target="#dashboard-stats"
+                            hx-trigger="click"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                        >
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <!-- Page header -->
+            <div class="px-4 py-6 sm:px-0">
+                <div
+                    class="border-4 border-dashed border-gray-200 rounded-lg p-4"
+                >
+                    <!-- This will be replaced by page-specific content -->
+                    {{template "content" .}}
+                </div>
+            </div>
+        </main>
+
+        <!-- Toast notifications for HTMX events -->
+        <div
+            id="toast-container"
+            class="fixed top-4 right-4 z-50 space-y-2"
+        ></div>
+
+        <!-- HTMX event handlers -->
+        <script>
+            // Handle HTMX events for better UX
+            document.body.addEventListener("htmx:afterRequest", function (evt) {
+                if (evt.detail.successful) {
+                    // Flash success
+                    showToast("Operation completed successfully", "success");
+                } else {
+                    // Flash error
+                    showToast("Something went wrong", "error");
+                }
+            });
+
+            function showToast(message, type) {
+                const toast = document.createElement("div");
+                toast.className = `px-4 py-3 rounded-md shadow-lg transform transition-all duration-300 ${
+                    type === "success"
+                        ? "bg-green-500 text-white"
+                        : "bg-red-500 text-white"
+                }`;
+                toast.textContent = message;
+
+                document.getElementById("toast-container").appendChild(toast);
+
+                // Auto remove after 3 seconds
+                setTimeout(() => {
+                    toast.remove();
+                }, 3000);
+            }
+        </script>
+    </body>
+</html>

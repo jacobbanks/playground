@@ -1,0 +1,127 @@
+{{define "content"}}
+<div class="space-y-6">
+    <!-- Page Header -->
+    <div class="flex justify-between items-center">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                {{if .service}}Edit Service{{else}}Add New Service{{end}}
+            </h2>
+            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                Configure a service endpoint for monitoring
+            </p>
+        </div>
+        <a
+            href="/services"
+            class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+        >
+            Back to Services
+        </a>
+    </div>
+
+    <!-- Form -->
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
+        <form
+            {{if
+            .service}}
+            hx-put="/services/{{.service.ID}}"
+            {{else}}
+            hx-post="/services"
+            {{end}}
+            hx-target="body"
+            hx-swap="outerHTML"
+            class="space-y-6 p-6"
+        >
+            <!-- Service Name -->
+            <div>
+                <label
+                    for="name"
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                    Service Name
+                </label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value="{{if .service}}{{.service.Name}}{{end}}"
+                    required
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100"
+                    placeholder="My Service"
+                />
+            </div>
+
+            <!-- Service URL -->
+            <div>
+                <label
+                    for="url"
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                    Service URL
+                </label>
+                <input
+                    type="url"
+                    id="url"
+                    name="url"
+                    value="{{if .service}}{{.service.URL}}{{end}}"
+                    required
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100"
+                    placeholder="https://example.com/api/health"
+                />
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label
+                    for="description"
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                    Description
+                </label>
+                <textarea
+                    id="description"
+                    name="description"
+                    rows="3"
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100"
+                    placeholder="Description of the service"
+                >
+{{if .service}}{{.service.Description}}{{end}}</textarea
+                >
+            </div>
+
+            <!-- Tags -->
+            <div>
+                <label
+                    for="tags"
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                    Tags (comma-separated)
+                </label>
+                <input
+                    type="text"
+                    id="tags"
+                    name="tags"
+                    value="{{if .service}}{{range $i, $tag := .service.Tags}}{{if $i}}, {{end}}{{$tag}}{{end}}{{end}}"
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100"
+                    placeholder="web, api, critical"
+                />
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex justify-end space-x-3">
+                <a
+                    href="/services"
+                    class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                >
+                    Cancel
+                </a>
+                <button
+                    type="submit"
+                    class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                    {{if .service}}Update Service{{else}}Create Service{{end}}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{{end}}

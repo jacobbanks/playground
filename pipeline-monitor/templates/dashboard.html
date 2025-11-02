@@ -1,0 +1,126 @@
+{{define "content"}}
+<div class="space-y-6">
+    <!-- Dashboard Header -->
+    <div class="md:flex md:items-center md:justify-between">
+        <div class="flex-1 min-w-0">
+            <h2
+                class="text-2xl font-bold leading-7 text-gray-900 dark:text-white sm:text-3xl sm:truncate"
+            >
+                🚀 Pipeline Monitor Dashboard
+            </h2>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Real-time monitoring of your services and pipelines
+            </p>
+        </div>
+        <div class="mt-4 flex md:mt-0 md:ml-4">
+            <button
+                hx-get="/services/new"
+                hx-target="#main-content"
+                hx-swap="innerHTML"
+                class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+                Add Service
+            </button>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div
+        id="dashboard-stats"
+        hx-get="/partials/dashboard-stats"
+        hx-trigger="load, every 30s"
+        class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
+    >
+        <!-- Loading placeholder -->
+        <div
+            class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg animate-pulse"
+        >
+            <div class="p-5">
+                <div
+                    class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"
+                ></div>
+                <div
+                    class="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mt-2"
+                ></div>
+            </div>
+        </div>
+        <div
+            class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg animate-pulse"
+        >
+            <div class="p-5">
+                <div
+                    class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"
+                ></div>
+                <div
+                    class="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mt-2"
+                ></div>
+            </div>
+        </div>
+        <div
+            class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg animate-pulse"
+        >
+            <div class="p-5">
+                <div
+                    class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"
+                ></div>
+                <div
+                    class="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mt-2"
+                ></div>
+            </div>
+        </div>
+        <div
+            class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg animate-pulse"
+        >
+            <div class="p-5">
+                <div
+                    class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"
+                ></div>
+                <div
+                    class="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mt-2"
+                ></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Services Overview -->
+    <div class="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-md">
+        <div class="px-4 py-5 sm:px-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3
+                        class="text-lg leading-6 font-medium text-gray-900 dark:text-white"
+                    >
+                        Services Overview
+                    </h3>
+                    <p
+                        class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400"
+                    >
+                        Real-time status of all monitored services
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Services List -->
+        <div
+            id="services-list"
+            hx-get="/partials/services-table"
+            hx-trigger="load, every 30s"
+            class="mt-4"
+        >
+            <!-- Services will be loaded here -->
+            <div class="animate-pulse">
+                <div
+                    class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full mb-2"
+                ></div>
+                <div
+                    class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"
+                ></div>
+                <div
+                    class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"
+                ></div>
+            </div>
+        </div>
+    </div>
+</div>
+{{end}}
